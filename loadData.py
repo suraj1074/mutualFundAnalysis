@@ -1,6 +1,6 @@
 import csv
 
-LIST_OF_FUNDS_FILE = ["ABSLTR96", "MOLTE"]
+LIST_OF_FUNDS_FILE = ["ABSLTR96", "MOLTE", "FranklinPrima"]
 INSTRUMENT_FILE = "Instruments.csv"
 SIP_DETAILS_FILE = "SIPDetails.csv"
 DATA_DIR = "data/"
@@ -47,5 +47,5 @@ def load_data():
 
 instruments = load_instruments()
 sip_data = load_sip_details()
-mutual_funds_data = load_funds_file()
+#mutual_funds_data = load_funds_file()
 data = load_data()

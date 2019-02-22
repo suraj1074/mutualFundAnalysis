@@ -69,7 +69,7 @@ def write_exposure_data_to_csv(security_wise_exposure):
 
 def transform_to_nice_table(security_wise_exposure):
     month_names = security_wise_exposure.keys()
-    header_row = list(["ISIN", "Instrument Name"]).append(month_names)
+    header_row = list(["ISIN", "Instrument Name"]) +list( month_names)
     security_wise_exposure_transformed = list()
     security_wise_exposure_transformed.append(header_row)
     instrument_isins = {}
