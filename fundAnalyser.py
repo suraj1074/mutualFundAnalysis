@@ -1,4 +1,4 @@
-from loadData import mutual_funds_data, sip_data, instruments
+from loadData import *
 import csv
 
 
@@ -12,7 +12,7 @@ def get_instrument_wise_exposure_month_by_month(months_name):
 def calculate_instrument_wise_exposure_by_month(month_name):
     security_wise_exposure = {}
     for instrument in instruments[1:]:
-        fund_wise_exposure = get_exposure_to_instrument_by_month(mutual_funds_data, instrument[1], month_name)
+        fund_wise_exposure = get_exposure_to_instrument_by_month(data[month_name], instrument[1])
         fund_wise_contribution = get_contribution_till_month(sip_data, month_name)
         security_wise_exposure[instrument[1]] = 0
         for fund in fund_wise_exposure:
@@ -21,14 +21,14 @@ def calculate_instrument_wise_exposure_by_month(month_name):
     return security_wise_exposure
 
 
-def get_exposure_to_instrument_by_month(funds_data, ISIN, month_name):
+def get_exposure_to_instrument_by_month(funds_data, ISIN):
     fund_wise_exposure = {}
     for fund in funds_data:
         fund_data = funds_data[fund]
         fund_wise_exposure[fund] = 0
         keys = fund_data[0]
-        isin_column_number = keys.index("ISIN " + month_name)
-        exposure_column_number = keys.index("% to net asset " + month_name)
+        isin_column_number = keys.index("ISIN")
+        exposure_column_number = keys.index("% to net asset")
         for row in fund_data[1:]:
             if row[isin_column_number] == ISIN:
                 fund_wise_exposure[fund] = row[exposure_column_number]
@@ -60,7 +60,7 @@ def get_float_from_percentage_string(percentage_string):
 
 def write_exposure_data_to_csv(security_wise_exposure):
     nice_table = transform_to_nice_table(security_wise_exposure)
-    with open('security_wise_exposure1.csv', 'w') as csvFile:
+    with open('security_wise_exposure.csv', 'w') as csvFile:
         writer = csv.writer(csvFile)
         for row in nice_table:
             writer.writerow([s for s in row or []])
@@ -83,6 +83,6 @@ def transform_to_nice_table(security_wise_exposure):
     return security_wise_exposure_transformed
 
 
-get_instrument_wise_exposure_month_by_month(['Jan 19', 'Dec 18'])
+get_instrument_wise_exposure_month_by_month(MONTH_TO_CONSIDER)
 # print calculate_instrument_wise_exposure_by_month('Jan 19')
 
