@@ -1,4 +1,4 @@
-from loadData import mutual_funds_data, sip_data, instruments
+from loadData import *
 import csv
 
 
@@ -38,7 +38,7 @@ def get_exposure_to_instrument_by_month(funds_data, ISIN, month_name):
 def get_contribution_till_month(sip_data, month_name):
     keys = sip_data[0][1:]
     total_contribution = {}
-    for k in xrange(len(keys)):
+    for k in range(len(keys)):
         key = keys[k]
         total_contribution[key] = 0
         for i in range(len(sip_data)-1, -1, -1):
@@ -54,7 +54,7 @@ def get_float_from_percentage_string(percentage_string):
         value = float(percentage_string.strip('%')) / 100
     except AttributeError:
         if percentage_string != 0:
-            print percentage_string
+            print(percentage_string)
     return value
 
 
@@ -63,13 +63,13 @@ def write_exposure_data_to_csv(security_wise_exposure):
     with open('security_wise_exposure.csv', 'w') as csvFile:
         writer = csv.writer(csvFile)
         for row in nice_table:
-            writer.writerow([s.encode('utf8') if type(s) is unicode else s for s in row])
+            writer.writerow([s for s in row or []])
     csvFile.close()
 
 
 def transform_to_nice_table(security_wise_exposure):
     month_names = security_wise_exposure.keys()
-    header_row = list(["ISIN", "Instrument Name"]) + month_names
+    header_row = list(["ISIN", "Instrument Name"]).append(month_names)
     security_wise_exposure_transformed = list()
     security_wise_exposure_transformed.append(header_row)
     instrument_isins = {}
@@ -83,6 +83,6 @@ def transform_to_nice_table(security_wise_exposure):
     return security_wise_exposure_transformed
 
 
-get_instrument_wise_exposure_month_by_month(['Jan 19', 'Dec 18'])
+get_instrument_wise_exposure_month_by_month(MONTH_TO_CONSIDER)
 # print calculate_instrument_wise_exposure_by_month('Jan 19')
 
