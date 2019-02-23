@@ -1,11 +1,11 @@
 import csv
+from hepler import *
 
 LIST_OF_FUNDS_FILE = ["ABSLTR96", "MOLTE", "FranklinPrima"]
-INSTRUMENT_FILE = "Instruments.csv"
+MONTH_TO_CONSIDER = ["dec18", "jan19"]
+INSTRUMENT_FILE = "master_instruments.csv"
 SIP_DETAILS_FILE = "SIPDetails.csv"
 DATA_DIR = "data/"
-MONTH_TO_CONSIDER = ["dec18", "jan19"]
-
 
 def load_data_by_file(file_name):
     rows = []
@@ -18,7 +18,12 @@ def load_data_by_file(file_name):
 
 
 def load_instruments():
-    return load_data_by_file(INSTRUMENT_FILE)
+    instruments_data = load_data_by_file(INSTRUMENT_FILE)
+    result = {}
+    for instrument in instruments_data:
+        if instrument[1] not in result:
+            result[instrument[0]] = instrument
+    return result
 
 
 def load_sip_details():
@@ -32,6 +37,20 @@ def load_funds_file():
     return mf_data
 
 
+def populate_portfolio_instruments(month_data, month_name):
+    month_portfolio = {}
+    for fund_data in month_data:
+        for instrument_data in month_data[fund_data]:
+            if check_isin(instrument_data[0]):
+                if instrument_data[0] in month_portfolio:
+                    continue
+                elif instrument_data[0] not in instruments:
+                    print("Instrument " + instrument_data[0] + " is absent in master_instrument")
+                    month_portfolio[instrument_data[0]] = instruments["ISIN"]
+                else:
+                    month_portfolio[instrument_data[0]] = instruments[instrument_data[0]]
+    portfolio_instruments[month_name] = month_portfolio
+
 def load_data():
     data = {}
     for month_name in MONTH_TO_CONSIDER:
@@ -41,11 +60,14 @@ def load_data():
             fund_file_name = month_dir_name + '/' + fund_name + ".csv"
             fund_data = load_data_by_file(fund_file_name)
             month_data[fund_name] = fund_data
+        populate_portfolio_instruments(month_data, month_name)
         data[month_name] = month_data
     return data
 
 
+portfolio_instruments = {}
 instruments = load_instruments()
 sip_data = load_sip_details()
 #mutual_funds_data = load_funds_file()
 data = load_data()
+print("abc")
