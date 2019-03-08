@@ -1,14 +1,18 @@
 import csv
 from hepler import *
 
-LIST_OF_FUNDS_FILE = ["ABSLTR96", "MOLTE", "FranklinPrima"]
+LIST_OF_FUNDS_FILE = ["ABSLTR96", "MOLTE", "FranklinPrima", "HdfcMidcap", "IciciHybrid","MiraeAsset","SbiSmallCap","ParagParikh"]
+# LIST_OF_FUNDS_FILE = ["ABSLTR96"]
 MONTH_TO_CONSIDER = ["dec18", "jan19"]
+# MONTH_TO_CONSIDER = ["dec18"]
 INSTRUMENT_FILE = "master_instruments.csv"
 SIP_DETAILS_FILE = "SIPDetails.csv"
 DATA_DIR = "data/"
 
+
 def load_data_by_file(file_name):
     rows = []
+    #print(file_name)
     f = open(file_name, mode='r', encoding='utf-8-sig')
     csv_reader = csv.reader(f)
     for row in csv_reader:
@@ -45,10 +49,12 @@ def populate_portfolio_instruments(month_data, month_name):
                 if instrument_data[0] in month_portfolio:
                     continue
                 elif instrument_data[0] not in instruments:
-                    print("Instrument " + instrument_data[0] + " is absent in master_instrument")
-                    month_portfolio[instrument_data[0]] = instruments["ISIN"]
+                    print("Instrument " + instrument_data[0] + " is absent. Fund: " + fund_data + " in month " + month_name)
+                    month_portfolio[instrument_data[0]] = [instrument_data[0], "Empty", "Empty"]
                 else:
                     month_portfolio[instrument_data[0]] = instruments[instrument_data[0]]
+            else:
+                print("Not a valid instrument: " + instrument_data[0])
     portfolio_instruments[month_name] = month_portfolio
 
 def load_data():
@@ -68,6 +74,6 @@ def load_data():
 portfolio_instruments = {}
 instruments = load_instruments()
 sip_data = load_sip_details()
-#mutual_funds_data = load_funds_file()
+# mutual_funds_data = load_funds_file()
 data = load_data()
-print("abc")
+print("loadData Finished")
